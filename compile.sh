@@ -3,7 +3,7 @@
 declare -i argc=0
 declare -a argv=()
 
-cflags="-O2 -std=c++11"
+cflags="-O2 -std=c++14 -fsanitize=undefined"
 
 while test "$1" != ""; do
   case ${1} in

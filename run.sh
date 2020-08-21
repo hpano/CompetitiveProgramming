@@ -119,7 +119,7 @@ for i in ${argv[@]}; do
   done < ./${in_file}
 
   for j in `seq 0 $(( case_count - 1))`; do
-    echo "[run] *** case ${j} ***"
+    echo "[run] *** case `expr ${j} + 1` ***"
     # echo "[run] input:"
     # echo -e "${input[${j}]}"
     # echo "[run] output:"
