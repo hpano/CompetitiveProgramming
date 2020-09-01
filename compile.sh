@@ -17,6 +17,6 @@ done
 
 if [ $argc -gt 0 ]; then
   for i in ${argv[@]}; do
-    g++ ${cflags} ${i}.cpp -o ${i}.out && echo "[compile] Compiled ${i}.cpp to ${i}.out"
+    g++-10 ${cflags} ${i}.cpp -o ${i}.out && echo "[compile] Compiled ${i}.cpp to ${i}.out"
   done
 fi
