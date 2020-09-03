@@ -132,7 +132,7 @@ EOT;)
     declare process_time=`echo "scale=6; (${end_time} - ${start_time})" | bc`
     if [ `echo "${process_time} > ${slowest_time}" | bc` == 1 ]; then
       slowest_time=${process_time}
-      slowest_case=${j}
+      slowest_case=$(( j + 1 ))
     fi
 
     echo "[run] time: ${process_time} sec"
