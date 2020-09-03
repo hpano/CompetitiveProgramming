@@ -105,7 +105,6 @@ for i in ${argv[@]}; do
       continue
     elif [ "${line}" == "</out>" ]; then
       outflag=false
-      output[${case_count}]=${output[${case_count}]%"\n"}
       output[${case_count}]=`echo -e "${output[${case_count}]}"`
       case_count=$(( case_count + 1 ))
       continue
@@ -128,7 +127,7 @@ for i in ${argv[@]}; do
     declare start_time=`gdate +%s.%6N`
     declare result=$(./${i}.out << EOT
     ${input[${j}]}
-    EOT)
+EOT;)
     declare end_time=`gdate +%s.%6N`
     declare process_time=`echo "scale=6; (${end_time} - ${start_time})" | bc`
     if [ `echo "${process_time} > ${slowest_time}" | bc` == 1 ]; then
