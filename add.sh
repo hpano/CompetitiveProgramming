@@ -1,12 +1,13 @@
 #!/bin/bash
 
 function get_atcoder() {
-  declare url_pre="https://atcoder.jp/contests/"
+  local url_pre="https://atcoder.jp/contests/"
+  # URLの前処理 企業コンなどotherの場合は特別
   if [ ${path[1]} = "other" ]; then
     url_pre+=$(echo ${path[2]} | tr "[A-Z]" "[a-z]")
     url_pre+="/tasks/"
     url_pre+=$(echo ${path[2]}_ | tr "[A-Z-]" "[a-z_]")
-    declare tmp_status=$(curl -Ls ${url_pre}a -o /dev/null -w '%{http_code}\n')
+    local tmp_status=$(curl -Ls ${url_pre}a -o /dev/null -w '%{http_code}\n')
     if [ ${tmp_status} -eq 404 ]; then
       if [[ ${url_pre} =~ "beginner" ]]; then
         url_pre=${url_pre%%_beginner*}
@@ -15,7 +16,7 @@ function get_atcoder() {
       tmp_status=$(curl -Ls ${url_pre}a -o /dev/null -w '%{http_code}\n')
     fi
     if [ ${tmp_status} -eq 404 ]; then
-      declare url_in
+      local url_in
       url_pre="${url_pre%\/*}/"
       read -p "URL? > ${url_pre}" url_in
       if [ "${url_in: -1}" != "_" ]; then
@@ -33,6 +34,7 @@ function get_atcoder() {
     url_pre+=$(echo "${path[2]}_")
   fi
 
+  # 各問題に対してデータ取得とinファイル作成
   for name in ${argv[@]}; do
     if [ -f ${name}.in ]; then
       if "${rflag}"; then
@@ -43,30 +45,40 @@ function get_atcoder() {
       fi
     fi
 
-    declare url=${url_pre}
+    local url=${url_pre}
     url+=${name}
-    declare url2=${url_pre}
+    local url2=${url_pre}
     url2+=$(echo ${name} | tr "[a-f]" "[1-6]")
-    declare url2flag=false
-    declare status=$(curl -Ls ${url} -o /dev/null -w '%{http_code}\n')
+    local url2flag=false
+    local continue_flag=false
+    local status=$(curl -Ls ${url} -o /dev/null -w '%{http_code}\n')
     if [ ${status} -eq 404 ]; then
       url2flag=true
       sleep 0.5
       status=$(curl -Ls ${url2} -o /dev/null -w '%{http_code}\n')
     fi
-    if [ ${status} -ne 200 ]; then
+    while [ ${status} -ne 200 ]; do
       echo "[add] Cannot recieve contents from ${url} (code: ${status})"
+      read -p "Input correct URL or 'n' to give up getting: " url
+      status=$(curl -Ls ${url} -o /dev/null -w '%{http_code}\n')
+      url2flag=false
+      if [[ ${url} == "n" ]]; then
+        continue_flag=true
+        break
+      fi
+    done
+    if "${continue_flag}"; then
       continue
     fi
     if "${url2flag}"; then
       url=${url2}
     fi
 
-    declare data=$(curl -Lso- ${url})
+    local data=$(curl -Lso- ${url})
     data=${data#*<span class=\"lang-ja\">}
     data=${data%%</span>*}
-    declare inflag=false
-    declare outflag=false
+    local inflag=false
+    local outflag=false
     touch ${name}.in
     
     echo "[add] Get from ${url}"
@@ -104,7 +116,7 @@ END
 }
 
 function get_aoj() {
-  declare url_pre="http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id="
+  local url_pre="http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id="
   if [ ${path[1]} = "course" ]; then
     url_pre+="${path[2]}_"
   elif [ ${path[1]} = "contest" ]; then
@@ -122,21 +134,30 @@ function get_aoj() {
       fi
     fi
 
-    declare url=${url_pre}
+    local url=${url_pre}
     url+=$(echo ${name} | tr "[a-z]" "[A-Z]")
-    declare status=$(curl -Ls ${url} -o /dev/null -w '%{http_code}\n')
-    if [ ${status} -ne 200 ]; then
+    local continue_flag=false
+    local status=$(curl -Ls ${url} -o /dev/null -w '%{http_code}\n')
+    while [ ${status} -ne 200 ]; do
       echo "[add] Cannot recieve contents from ${url} (code: ${status})"
+      read -p "Input correct URL or 'n' to give up getting: " url
+      status=$(curl -Ls ${url} -o /dev/null -w '%{http_code}\n')
+      if [[ ${url} == "n" ]]; then
+        continue_flag=true
+        break
+      fi
+    done
+    if "${continue_flag}"; then
       continue
     fi
 
-    declare data=$(curl -Lso- ${url})
+    local data=$(curl -Lso- ${url})
     data=${data#*<[hH]1>}
     data=${data%%<h3 style="color:#aaa">Note</h3>*}
-    declare inflag1=false
-    declare inflag2=false
-    declare outflag1=false
-    declare outflag2=false
+    local inflag1=false
+    local inflag2=false
+    local outflag1=false
+    local outflag2=false
     touch ${name}.in
   
     echo "[add] Get from ${url}"
@@ -182,7 +203,7 @@ END
 }
 
 function get_yukicoder() {
-  declare url_pre="https://yukicoder.me/problems/no/"
+  local url_pre="https://yukicoder.me/problems/no/"
 
   for name in ${argv[@]}; do
     if [ -f ${name}.in ]; then
@@ -194,19 +215,28 @@ function get_yukicoder() {
       fi
     fi
 
-    declare url=${url_pre}
+    local url=${url_pre}
     url+=${name}
-    declare status=$(curl -Ls ${url} -o /dev/null -w '%{http_code}\n')
-    if [ ${status} -ne 200 ]; then
+    local continue_flag=false
+    local status=$(curl -Ls ${url} -o /dev/null -w '%{http_code}\n')
+    while [ ${status} -ne 200 ]; do
       echo "[add] Cannot recieve contents from ${url} (code: ${status})"
+      read -p "Input correct URL or 'n' to give up getting: " url
+      status=$(curl -Ls ${url} -o /dev/null -w '%{http_code}\n')
+      if [[ ${url} == "n" ]]; then
+        continue_flag=true
+        break
+      fi
+    done
+    if "${continue_flag}"; then
       continue
     fi
 
-    declare data=$(curl -Lso- ${url})
+    local data=$(curl -Lso- ${url})
     data=${data#*<h4 class=\"shadow\">サンプル</h4>}
     data=${data%%<input type=\"hidden\" name=\"csrf_token\"*}
-    declare inflag=false
-    declare outflag=false
+    local inflag=false
+    local outflag=false
     touch ${name}.in
   
     echo "[add] Get from ${url}"
@@ -260,7 +290,6 @@ END
 }
 
 
-declare -i argc=0
 declare -a argv=()
 declare rflag=false
 while test "$1" != ""; do
@@ -272,7 +301,6 @@ while test "$1" != ""; do
       shift
       ;;
     *)
-      ((++argc))
       argv=("${argv[@]}" "${1%.cpp}")
       shift
       ;;
