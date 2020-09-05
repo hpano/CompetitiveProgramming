@@ -27,8 +27,8 @@ function write2bashrc() {
     done
     if [[ ${yn} == "y" ]]; then
       echo "# competitive programing by hpano" >> ~/.bashrc
-      echo "cd_shell(){" >> ~/.bashrc
-      echo "    cd \$1" >> ~/.bashrc
+      echo "compp(){" >> ~/.bashrc
+      echo "    . compp.sh $@" >> ~/.bashrc
       echo "}" >> ~/.bashrc
       source ~/.bashrc
       echo "[setting] Wrote functions to ~/.bashrc"

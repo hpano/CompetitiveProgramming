@@ -1,6 +1,20 @@
 #!/bin/bash
 
+function make_cpp_file() {
+  for name in ${argv[@]}; do
+    if [ -f ${name}.cpp ]; then
+      echo "[add] ${name}.cpp already exists"
+      continue
+    fi
+
+    cp $(dirname $0)/template.cpp ${name}.cpp && \
+    echo "[add] Added ${name}.cpp"
+  done
+}
+
 function get_atcoder() {
+  make_cpp_file
+
   local url_pre="https://atcoder.jp/contests/"
   # URLの前処理 企業コンなどotherの場合は特別
   if [ ${path[1]} = "other" ]; then
@@ -116,6 +130,8 @@ END
 }
 
 function get_aoj() {
+  make_cpp_file
+
   local url_pre="http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id="
   if [ ${path[1]} = "course" ]; then
     url_pre+="${path[2]}_"
@@ -203,6 +219,8 @@ END
 }
 
 function get_yukicoder() {
+  make_cpp_file
+
   local url_pre="https://yukicoder.me/problems/no/"
 
   for name in ${argv[@]}; do
@@ -307,17 +325,10 @@ while test "$1" != ""; do
   esac
 done
 
-for name in ${argv[@]}; do
-  if [ -f ${name}.cpp ]; then
-    echo "[add] ${name}.cpp already exists"
-    continue
-  fi
-
-  cp $(dirname $0)/template.cpp ${name}.cpp && \
-  echo "[add] Added ${name}.cpp"
-done
-
-declare path=( $(pwd | sed -e "s/.*competitive_programming\///g" | tr "/" " ") )
+declare path=( $(pwd | sed -e "s/.*competitive_programming//g" | tr "/" " ") )
+if [[ ${path: 0: 1} == "/" ]]; then
+  path=${path: 1}
+fi
 case ${path[0]} in
   "atcoder")
     get_atcoder
