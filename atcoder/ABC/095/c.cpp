@@ -28,7 +28,27 @@ template<class T>bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1; } 
 #pragma endregion
 
 int main() {
-  
+  IN(int, A);
+  IN(int, B);
+  IN(int, C);
+  IN(int, X);
+  IN(int, Y);
+  int min = X;
+  chmin(min, Y);
+  int sum = 0;
+  if (C * 2 < A + B) {
+    sum += C * 2 * min;
+  } else {
+    sum += (A + B) * min;
+  }
+  if (min == X) {
+    if (B < C * 2) sum += B * (Y - min);
+    else sum += C * 2 * (Y - min);
+  } else {
+    if (A < C * 2) sum += A * (X - min);
+    else sum += C * 2 * (X - min);
+  }
+  cout << sum << endl;
 
   return 0;
 }

@@ -28,7 +28,40 @@ template<class T>bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1; } 
 #pragma endregion
 
 int main() {
-  
+  IN(int, N);
+  IN(int, M);
+  vector<vector<int> > switchs(N, vector<int>(0));
+  REP(i, M) {
+    IN(int, k);
+    REP(j, k) {
+      IN(int, s);
+      switchs.at(--s).push_back(i);
+    }
+  }
+  vector<int> p(M);
+  INALL(int, p)
+
+  int max = (int)pow(2, N);
+  int count = 0;
+  REP(bits, max) {
+    vector<int> lights(M, 0);
+    REP(i, N) {
+      if ((bits & (1 << i)) != 0) {
+        REP(j, switchs.at(i).size()) {
+          lights.at(switchs.at(i).at(j))++;
+        }
+      }
+    }
+    bool ok_flag = true;
+    REP(i, M) {
+      if (lights.at(i) % 2 != p.at(i)) {
+        ok_flag = false;
+        break;
+      }
+    }
+    if (ok_flag) count++;
+  }
+  cout << count << endl;
 
   return 0;
 }

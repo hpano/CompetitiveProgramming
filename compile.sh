@@ -2,11 +2,17 @@
 
 declare -i argc=0
 declare -a argv=()
-
-cflags="-O2 -std=c++14 -fsanitize=undefined"
+declare cflags="-Wall -Wextra -O2 -std=c++14 -fsanitize=undefined -Wshadow -Wconversion -Wduplicated-cond -Wno-unknown-pragmas -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC"
+declare dflag=false
 
 while test "$1" != ""; do
   case ${1} in
+    -*)
+      if [[ "$1" =~ 'd' ]] || [[ "$1" =~ '-debug' ]]; then
+        dflag=true
+      fi
+      shift
+      ;;
     *)
       ((++argc))
       argv=("${argv[@]}" "${1%.cpp}")
@@ -14,6 +20,10 @@ while test "$1" != ""; do
       ;;
   esac
 done
+
+if "${dflag}"; then
+  cflags+=" -D_DEBUG"
+fi
 
 if [ $argc -gt 0 ]; then
   for i in ${argv[@]}; do

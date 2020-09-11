@@ -28,7 +28,16 @@ template<class T>bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1; } 
 #pragma endregion
 
 int main() {
-  
+  IN(int, N);
+  int count = 0;
+  int i = 10;
+  while (i <= N) {
+    count += (int)(i * 0.9);
+    i *= 100;
+  }
+  i /= 10;
+  if (N >= i) count += N - i + 1;
+  cout << count << endl;
 
   return 0;
 }

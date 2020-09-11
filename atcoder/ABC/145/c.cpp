@@ -28,7 +28,45 @@ template<class T>bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1; } 
 #pragma endregion
 
 int main() {
-  
+  IN(int, N);
+  vector<ll> x(N);
+  vector<ll> y(N);
+  REP(i, N) {
+    IN(ll, tmp_x);
+    x.at(i) = tmp_x;
+    IN(ll, tmp_y);
+    y.at(i) = tmp_y;
+  }
+
+  cout << std::fixed << std::setprecision(6);
+
+  vector<vector<long double> > dist(N, vector<long double>(N, 0));
+  REP(i, N - 1) {
+    REP(j, i + 1, N) {
+      dist.at(i).at(j) = sqrtl((long double)(pow(x.at(i) - x.at(j), 2) + pow(y.at(i) - y.at(j), 2)));
+      dist.at(j).at(i) = dist.at(i).at(j);
+    }
+  }
+
+  vector<int> num;
+  REP(i, 0, N) {
+    num.push_back(i);
+  }
+
+  long double sum = 0;
+  do {
+    REP(i, N - 1) {
+      sum += dist.at(num.at(i)).at(num.at(i + 1));
+    }
+  } while (next_permutation(ALL(num)));
+
+  ll factorial = 1;
+  REP(i, 1, N + 1) {
+    factorial *= i;
+  }
+
+  long double ans = sum / (long double)factorial;
+  cout << ans << endl;
 
   return 0;
 }

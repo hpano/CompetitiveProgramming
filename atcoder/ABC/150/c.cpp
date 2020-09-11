@@ -28,7 +28,33 @@ template<class T>bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1; } 
 #pragma endregion
 
 int main() {
-  
+  IN(int, N);
+  vector<int> P(N);
+  INALL(int, P)
+  vector<int> Q(N);
+  INALL(int, Q)
+  vector<int> num;
+
+  REP(i, 1, N + 1) {
+    num.push_back(i);
+  }
+
+  int count = 0;
+  int idx_p = 0;
+  int idx_q = 0;
+  do {
+    bool p_flag = true;
+    bool q_flag = true;
+    REP(i, N) {
+      if (P.at(i) != num.at(i)) p_flag = false;
+      if (Q.at(i) != num.at(i)) q_flag = false;
+    }
+    if (p_flag) idx_p = count;
+    if (q_flag) idx_q = count;
+    count++;
+  } while (next_permutation(ALL(num)));
+
+  cout << abs(idx_p - idx_q) << endl;
 
   return 0;
 }

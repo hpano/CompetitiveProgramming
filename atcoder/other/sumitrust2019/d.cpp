@@ -28,7 +28,30 @@ template<class T>bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1; } 
 #pragma endregion
 
 int main() {
-  
+  IN(int, N);
+  IN(string, S);
+  int count = 0;
+  REP(i, 10) {
+    REP(j, 10) {
+      REP(k, 10) {
+        bool left = false, center = false, right = false;
+        REP(l, N) {
+          if (!left) {
+            if (S.at(l) == i + '0') left = true;
+          } else if (!center) {
+            if (S.at(l) == j + '0') center = true;
+          } else if (!right) {
+            if (S.at(l) == k + '0') {
+              right = true;
+              break;
+            }
+          }
+        }
+        if (right) count++;
+      }
+    }
+  }
+  cout << count << endl;
 
   return 0;
 }

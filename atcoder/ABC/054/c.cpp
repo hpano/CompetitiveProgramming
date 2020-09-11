@@ -27,8 +27,42 @@ template<class T>bool chmax(T &a, const T &b) { if (a < b) { a = b; return 1; } 
 template<class T>bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1; } return 0; }
 #pragma endregion
 
+bool check_visit_all(vector<bool> &visit) {
+  REP(i, visit.size()) {
+    if (!visit.at(i)) return false;
+  }
+
+  return true;
+}
+
+int solve(vector<vector<int> > &path, int node, vector<bool> visit) {
+  visit.at(node) = true;
+  if (check_visit_all(ref(visit))) return 1;
+  int ans = 0;
+  REP(i, path.at(node).size()) {
+    int next = path.at(node).at(i);
+    if (visit.at(next)) continue;
+    ans += solve(ref(path), next, visit);
+  }
+
+  return ans;
+}
+
 int main() {
-  
+  IN(int, N);
+  IN(int, M);
+  vector<vector<int> > path(N, vector<int>());
+  REP(i, M) {
+    IN(int, a);
+    IN(int, b);
+    path.at(--a).push_back(--b);
+    path.at(b).push_back(a);
+  }
+
+  vector<bool> visit(N, false);
+  int ans = solve(ref(path), 0, visit);
+
+  cout << ans << endl;
 
   return 0;
 }

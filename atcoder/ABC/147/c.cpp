@@ -28,7 +28,39 @@ template<class T>bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1; } 
 #pragma endregion
 
 int main() {
-  
+  IN(int, N);
+  vector<vector<pair<int, int> > > xy(N, vector<pair<int, int> >());
+  REP(i, N) {
+    IN(int, A);
+    REP(j, A) {
+      IN(int, x);
+      IN(int, y);
+      xy.at(i).push_back(make_pair(--x, y));
+    }
+  }
+
+  int bit_max = (int)pow(2, N);
+  int max = 0;
+  REP(bnum, bit_max) {
+    bool ok_flag = true;
+    bitset<15> bit(bnum);
+    REP(i, N) {
+      if(bit[i]) {
+        REP(j, xy.at(i).size()) {
+          if (bit[xy.at(i).at(j).first] != xy.at(i).at(j).second) {
+            ok_flag = false;
+            break;
+          }
+        }
+      }
+      if (!ok_flag) break;
+    }
+    if (ok_flag) {
+      int num = (int)bit.count();
+      chmax(max, num);
+    }
+  }
+  cout << max << endl;
 
   return 0;
 }

@@ -28,7 +28,21 @@ template<class T>bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1; } 
 #pragma endregion
 
 int main() {
-  
+  IN(int, A);
+  IN(int, B);
+  IN(int, K);
+  int rng = A;
+  chmin(rng, B);
+  int count = 0;
+  RREP(i, 1, rng + 1) {
+    if ((A % i == 0) && (B % i == 0)) {
+      count++;
+      if (count == K) {
+        cout << i << endl;
+        return 0;
+      }
+    }
+  }
 
   return 0;
 }

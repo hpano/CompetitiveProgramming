@@ -28,7 +28,16 @@ template<class T>bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1; } 
 #pragma endregion
 
 int main() {
-  
+  IN(int, N);
+  REP(i, 1, 10) {
+    if ((N % i) == 0) {
+      if ((N / i) <= 9) {
+        cout << "Yes" << endl;
+        return 0;
+      }
+    }
+  }
+  cout << "No" << endl;
 
   return 0;
 }

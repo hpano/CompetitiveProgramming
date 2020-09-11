@@ -28,7 +28,27 @@ template<class T>bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1; } 
 #pragma endregion
 
 int main() {
-  
+  IN(string, S);
+  bool flag = false;
+  int count = 0;
+  int tmp_count = 0;
+  REP(i, S.size()) {
+    if (S.at(i) == 'A' || S.at(i) == 'C' || S.at(i) == 'G' || S.at(i) == 'T') {
+      if (!flag) {
+        flag = true;
+      }
+      tmp_count++;
+    } else {
+      if (flag) {
+        chmax(count, tmp_count);
+        flag = false;
+        tmp_count = 0;
+      }
+    }
+  }
+  chmax(count, tmp_count);
+
+  cout << count << endl;
 
   return 0;
 }

@@ -6,6 +6,7 @@ function usage() {
   echo "Options:"
   echo "  -h, --help           Display available options."
   echo "  -c, --compile        Compile the FILE."
+  echo "  -d. --debug          Compile as debug mode."
   echo "  -i, --input INPUT    Specify input file as INPUT."
   echo "  -n, --norun          Not run code test."
   echo "  -r, --remove         Remove the existing executable file."
@@ -17,6 +18,7 @@ declare -i argc=0
 declare -a argv=()
 declare hflag=false
 declare cflag=false
+declare dflag=false
 declare iflag=false
 declare nflag=false
 declare rflag=false
@@ -30,6 +32,9 @@ while test "$1" != ""; do
       fi
       if [[ "$1" =~ 'c' ]] || [[ "$1" =~ '-compile' ]]; then
         cflag=true
+      fi
+      if [[ "$1" =~ 'd' ]] || [[ "$1" =~ '-debug' ]]; then
+        dflag=true
       fi
       if [[ "$1" =~ 'n' ]] || [[ "$1" =~ '-norun' ]]; then
         nflag=true
@@ -65,7 +70,11 @@ if "${rflag}"; then
 fi
 if "${cflag}"; then
   for i in ${argv[@]}; do
-    $(dirname $0)/compile.sh ${i} || eval cmissflag_${i}=true
+    if "${dflag}"; then
+      $(dirname $0)/compile.sh -d ${i} || eval cmissflag_${i}=true
+    else
+      $(dirname $0)/compile.sh ${i} || eval cmissflag_${i}=true
+    fi
   done
 fi
 if "${nflag}"; then

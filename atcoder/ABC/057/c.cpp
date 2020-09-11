@@ -27,8 +27,28 @@ template<class T>bool chmax(T &a, const T &b) { if (a < b) { a = b; return 1; } 
 template<class T>bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1; } return 0; }
 #pragma endregion
 
+int count_digit(ll n) {
+  int count = 0;
+  while (n != 0) {
+    n /= 10;
+    count++;
+  }
+
+  return count;
+}
+
 int main() {
-  
+  IN(ll, N);
+  int min = 20;
+  REP(i, 1, sqrt(N + 1) + 1) {
+    if (N % (ll)i == 0) {
+      ll tmp_n = N / (ll)i;
+      int f = count_digit((ll)i);
+      chmax(f, count_digit(tmp_n));
+      chmin(min, f);
+    }
+  }
+  cout << min << endl;
 
   return 0;
 }
