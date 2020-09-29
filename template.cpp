@@ -25,6 +25,8 @@ using ll = long long;
 
 template<class T>bool chmax(T &a, const T &b) { if (a < b) { a = b; return 1; } return 0; }
 template<class T>bool chmin(T &a, const T &b) { if (b < a) { a = b; return 1; } return 0; }
+void yes() { cout << "Yes" << endl; }
+void no() { cout << "No" << endl; }
 #pragma endregion
 
 int main() {
