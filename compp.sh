@@ -8,7 +8,7 @@ function usage() {
   echo "  -d, --directory DIRECTORYs   Write the directory hierarchy where the program is placed."
   echo "  -f, --file FILEs             Write the file name to create."
   echo
-  exit 1
+  return 1
 }
 
 declare -a directorys=()
@@ -31,7 +31,7 @@ while test "$1" != ""; do
           if [[ $2 =~ "." ]] && [[ $2 != *.cpp ]]; then
             echo "[compp] Invalid file $2 !"
             echo "        You can input *.cpp or *"
-            exit 1
+            return 1
           fi
           files+=(${2%.cpp})
           shift
@@ -39,14 +39,14 @@ while test "$1" != ""; do
       else
         echo "[compp] Invalid option $1 !"
         usage
-        exit 1
+        return 1
       fi
       shift
       ;;
     *)
       echo "[compp] Invalid input $1 !"
       usage
-      exit 1
+      return 1
       ;;
   esac
 done
@@ -55,7 +55,7 @@ directorys=(${directorys[@]//// })
 
 if "${hflag}"; then
   usage
-  exit
+  return 0
 fi
 
 declare rootpath=$(which compp.sh)
@@ -87,7 +87,7 @@ if [[ ${addpath} == "" ]]; then
   read -p "[compp] Input add.sh path or 'n' to give up add file: " addpath
 fi
 if [[ ${addpath} == "n" ]]; then
-  exit 1
+  return 1
 elif [[ ${addpath: -3} != ".sh" ]]; then
   if [[ ${addpath: -1} != "/" ]]; then
     addpath+="/"

@@ -133,9 +133,9 @@ function get_aoj() {
   make_cpp_file
 
   local url_pre="http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id="
-  if [ ${path[1]} = "course" ]; then
+  if [ ${path[1]} == "course" ]; then
     url_pre+="${path[2]}_"
-  elif [ ${path[1]} = "contest" ]; then
+  elif [ ${path[1]} == "contest" ]; then
     echo "[add] Not supported"
     exit 1
   fi
@@ -203,10 +203,10 @@ function get_aoj() {
         else
           echo ${line} >> ${name}.in
         fi
-      elif [[ ${line} =~ "2>Sample Input" ]] || [[ ${line} =~ "3>入力例" ]]; then
+      elif [[ ${line} =~ ">Sample Input</" ]] || [[ ${line} =~ ">入力例</" ]]; then
         echo "<in>" >> ${name}.in
         inflag1=true
-      elif [[ ${line} =~ "2>Sample Output" ]] || [[ ${line} =~ "3>出力例" ]] || [[ ${line} =~ "2>Output for the Sample Input" ]]; then
+      elif [[ ${line} =~ ">Sample Output</" ]] || [[ ${line} =~ ">出力例</" ]] || [[ ${line} =~ ">Output for the Sample Input</" ]]; then
         echo "<out>" >> ${name}.in
         outflag1=true
       fi
