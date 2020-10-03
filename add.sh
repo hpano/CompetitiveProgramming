@@ -133,9 +133,9 @@ function get_aoj() {
   make_cpp_file
 
   local url_pre="http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id="
-  if [ ${path[1]} == "course" ]; then
+  if [[ ${path[1]} == "course" ]]; then
     url_pre+="${path[2]}_"
-  elif [ ${path[1]} == "contest" ]; then
+  elif [[ ${path[1]} == "contest" ]]; then
     echo "[add] Not supported"
     exit 1
   fi
