@@ -63,6 +63,10 @@ function get_atcoder() {
     url+=${name}
     local url2=${url_pre}
     url2+=$(echo ${name} | tr "[a-f]" "[1-6]")
+    if "${bflag}"; then
+      url+=" -b 'REVEL_SESSION=${reveal_session}'"
+      url2+=" -b 'REVEL_SESSION=${reveal_session}'"
+    fi
     local url2flag=false
     local continue_flag=false
     local status=$(curl -Ls ${url} -o /dev/null -w '%{http_code}\n')
@@ -310,11 +314,18 @@ END
 
 declare -a argv=()
 declare rflag=false
+declare bflag=false
+declare reveal_session
 while test "$1" != ""; do
   case $1 in
     -*)
       if [[ "$1" =~ 'r' ]] || [[ "$1" =~ '-remove' ]]; then
         rflag=true
+      fi
+      if [[ "$1" =~ 'b' ]] || [[ "$1" =~ '-cookie' ]]; then
+        bflag=true
+        reveal_session=$2
+        shift
       fi
       shift
       ;;
