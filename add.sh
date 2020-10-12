@@ -64,8 +64,8 @@ function get_atcoder() {
     local url2=${url_pre}
     url2+=$(echo ${name} | tr "[a-f]" "[1-6]")
     if "${bflag}"; then
-      url+=" -b 'REVEL_SESSION=${reveal_session}'"
-      url2+=" -b 'REVEL_SESSION=${reveal_session}'"
+      url+=" -b REVEL_SESSION=${reveal_session}"
+      url2+=" -b REVEL_SESSION=${reveal_session}"
     fi
     local url2flag=false
     local continue_flag=false
@@ -311,14 +311,28 @@ END
   done
 }
 
+function usage() {
+  echo "Usage: $0 [OPTIONS] FILEs"
+  echo
+  echo "Options:"
+  echo "  -h, --help                   Display available options."
+  echo "  -r, --remove                 Remove existing input file ."
+  echo "  -b, --cookie REVEAL_SESSION  Specify the reveal_session value."
+  echo
+  return 1
+}
 
 declare -a argv=()
+declare hflag=false
 declare rflag=false
 declare bflag=false
 declare reveal_session
 while test "$1" != ""; do
   case $1 in
     -*)
+      if [[ "$1" =~ 'h' ]] || [[ "$1" =~ '-help' ]]; then
+        hflag=true
+      fi
       if [[ "$1" =~ 'r' ]] || [[ "$1" =~ '-remove' ]]; then
         rflag=true
       fi
@@ -335,6 +349,11 @@ while test "$1" != ""; do
       ;;
   esac
 done
+
+if "${hflag}"; then
+  usage
+  exit
+fi
 
 declare path=( $(pwd | sed -e "s/.*competitive_programming//g" | tr "/" " ") )
 if [[ ${path: 0: 1} == "/" ]]; then
