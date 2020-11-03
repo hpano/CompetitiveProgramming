@@ -29,8 +29,74 @@ void yes() { cout << "Yes" << endl; }
 void no() { cout << "No" << endl; }
 #pragma endregion
 
+struct UnionFind {
+  std::vector<int> parent;
+  std::vector<int> rank;
+
+  UnionFind(int N) : parent(N), rank(N, 0) {
+    for (int i = 0; i < N; ++i) {
+      parent.at(i) = i;
+    }
+  }
+
+  int root(int x) {
+    if (parent.at(x) == x) return x;
+    return parent.at(x) = root(parent.at(x));
+  }
+
+  void merge(int x, int y) {
+    int rx = root(x);
+    int ry = root(y);
+    if (rx == ry) return;
+
+    if (rank.at(rx) < rank.at(ry)) {
+      parent.at(rx) = ry;
+    } else {
+      parent.at(ry) = rx;
+      if (rank.at(rx) == rank.at(ry)) {
+        rank.at(rx)++;
+      }
+    }
+  }
+
+  bool is_same(int x, int y) {
+    int rx = root(x);
+    int ry = root(y);
+    return rx == ry;
+  }
+};
+
 int main() {
-  
+  IN(int, N);
+  UnionFind uf(N + 2);
+  vector<pair<int, int> > pos(N);
+  REP(i, N) {
+    IN(int, x);
+    IN(int, y);
+    pos.at(i) = make_pair(x, y);
+  }
+
+  vector<tuple<double, int, int> > lens;
+  REP(i, N) {
+    REP(j, i + 1, N) {
+      int x_div = pos.at(i).first - pos.at(j).first;
+      int y_div = pos.at(i).second - pos.at(j).second;
+      double tmp_len = sqrt(x_div * x_div + y_div * y_div);
+      lens.emplace_back(make_tuple(tmp_len, i, j));
+    }
+    lens.emplace_back(make_tuple((100 - pos.at(i).second), i, N));
+    lens.emplace_back(make_tuple((pos.at(i).second + 100), i, N + 1));
+  }
+  lens.emplace_back(make_tuple(200, N, N + 1));
+  sort(lens.begin(), lens.end());
+
+  for (int i = 0; i < (int)lens.size(); ++i) {
+    uf.merge(get<1>(lens.at(i)), get<2>(lens.at(i)));
+    if (uf.is_same(N, N + 1)) {
+      cout << get<0>(lens.at(i)) / 2 << endl;
+      return 0;
+    }
+  }
 
   return 0;
 }

@@ -311,6 +311,24 @@ END
   done
 }
 
+function get_other() {
+  make_cpp_file
+
+  for name in ${argv[@]}; do
+    if [ -f ${name}.in ]; then
+      if "${rflag}"; then
+        rm ${name}.in
+      else
+        echo "[add] ${name}.in already exists"
+        continue
+      fi
+    fi
+
+    cp $(dirname $0)/template.in ${name}.in && \
+    echo "[add] Added ${name}.in"
+  done
+}
+
 function usage() {
   echo "Usage: $0 [OPTIONS] FILEs"
   echo
@@ -368,6 +386,9 @@ case ${path[0]} in
     ;;
   "yukicoder")
     get_yukicoder
+    ;;
+  "other")
+    get_other
     ;;
   *)
     echo "[add] ${path[0]} is unsupported"
