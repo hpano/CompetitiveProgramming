@@ -207,10 +207,10 @@ function get_aoj() {
         else
           echo ${line} >> ${name}.in
         fi
-      elif [[ ${line} =~ ">Sample Input</" ]] || [[ ${line} =~ ">入力例</" ]]; then
+      elif [[ ${line} =~ ">Sample Input" ]] || [[ ${line} =~ ">入力例" ]]; then
         echo "<in>" >> ${name}.in
         inflag1=true
-      elif [[ ${line} =~ ">Sample Output</" ]] || [[ ${line} =~ ">出力例</" ]] || [[ ${line} =~ ">Output for the Sample Input</" ]]; then
+      elif [[ ${line} =~ ">Sample Output" ]] || [[ ${line} =~ ">出力例" ]] || [[ ${line} =~ ">Output for the Sample Input</" ]]; then
         echo "<out>" >> ${name}.in
         outflag1=true
       fi
