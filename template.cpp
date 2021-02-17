@@ -13,7 +13,7 @@ using ll = long long;
 #define GET_MACRO_RREP(_1, _2, _3, NAME, ...) NAME
 #define RREP(...) GET_MACRO_REP(__VA_ARGS__, RREP3, RREP2) (__VA_ARGS__)
 #define IN(type, n) type n; cin >> n
-#define INALL(v) for (auto &e : v) { cin >> e; }
+#define INALL(type, v, s) vector<type> v(s); for (auto &e : v) { cin >> e; }
 #define ALL(x) (x).begin(), (x).end()
 #define SZ(x) ((int)(x).size())
 
