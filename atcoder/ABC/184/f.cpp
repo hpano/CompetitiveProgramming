@@ -29,49 +29,67 @@ void yes() { cout << "Yes" << endl; }
 void no() { cout << "No" << endl; }
 #pragma endregion
 
+vector<ll> make_sums(vector<ll> &A) {
+  vector<ll> sums;
+  REP(i, (1 << A.size())) {
+    ll tmp_sum = 0;
+    int bit = i;
+    REP(j, A.size()) {
+      if (bit % 2 == 1) tmp_sum += A.at(j);
+      bit /= 2;
+    }
+    sums.emplace_back(tmp_sum);
+  }
+
+  sort(ALL(sums));
+
+  return sums;
+}
+
+pair<vector<ll>, vector<ll> > get_sums(vector<ll> &A) {
+  vector<ll> A1(A.size() / 2);
+  vector<ll> A2(A.size() - A1.size());
+  REP(i, A1.size()) {
+    A1.at(i) = A.at(i);
+  }
+  REP(i, A2.size()) {
+    A2.at(i) = A.at(i + A1.size());
+  }
+
+  return make_pair(make_sums(ref(A1)), make_sums(ref(A2)));
+}
+
+int binary_search(vector<ll> &A, ll key) {
+  int left = -1;
+  int right = (int)A.size();
+  while (right - left > 1) {
+    int mid = (left + right) / 2;
+    if (A.at(mid) == key) return mid;
+    else if (A.at(mid) > key) right = mid;
+    else left = mid;
+  }
+
+  return left;
+}
+
 int main() {
   IN(int, N);
   IN(ll, T);
   vector<ll> A(N);
-  // INALL(ll, A);
-  map<ll, ll> mapA;
-  REP(i, N) {
-    IN(ll, a);
-    A.at(i) = a;
-    mapA[a]++;
-  }
-  sort(ALL(A));
+  INALL(ll, A);
 
-  ll sum = 0;
-  ll fin_idx = 0;
-  REP(i, N) {
-    if (sum + A.at(i) > T) break;
-    else if (sum + A.at(i) == T) {
-      cout << T << endl;
-      return 0;
-    }
-    sum += A.at(i);
-    fin_idx = i;
+  auto [A1, A2] = get_sums(ref(A));
+
+  ll max = 0;
+  for (auto const &a1 : A1) {
+    if (a1 > T) break;
+    ll target = T - a1;
+    int idx = binary_search(ref(A2), target);
+    if (idx == -1) break;
+    chmax(max, a1 + A2.at(idx));
   }
 
-  for (int rem = T - sum; rem > 0; --rem) {
-    RREP(i, fin_idx + 1) {
-      if (mapA.find(A.at(i) + rem) != mapA.end()) {
-        cout << sum + rem << endl;
-        return 0;
-      }
-    }
-  }
-
-  vector<vector<ll> > dp(N + 1, vector<ll>(T + 1, 0));
-  REP(i, N) {
-    for (ll t = 0; t <= T; ++t) {
-      if (t >= A.at(i)) dp.at(i + 1).at(t) = max(dp.at(i).at(t - A.at(i)) + A.at(i), dp.at(i).at(t));
-      else dp.at(i + 1).at(t) = dp.at(i).at(t);
-    }
-  }
-
-  cout << dp.at(N).at(T) << endl;
+  cout << max << endl;
 
   return 0;
 }

@@ -29,10 +29,36 @@ void yes() { cout << "Yes" << endl; }
 void no() { cout << "No" << endl; }
 #pragma endregion
 
+void set_values(int A, int B, int C, vector<vector<vector<double> > > &values, double val) {
+  values.at(A).at(B).at(C) = val;
+  values.at(A).at(C).at(B) = val;
+  values.at(B).at(A).at(C) = val;
+  values.at(B).at(C).at(A) = val;
+  values.at(C).at(A).at(B) = val;
+  values.at(C).at(B).at(A) = val;
+}
+
+double calc(int A, int B, int C, vector<vector<vector<double> > > &values) {
+  if (A == 100 || B == 100 || C == 100) return 0.0;
+  if (values.at(A).at(B).at(C) != -1) return values.at(A).at(B).at(C);
+
+  double ans = 0.0;
+  if (A != 0) ans += (1.0 + calc(A + 1, B, C, ref(values))) * A / (A + B + C);
+  if (B != 0) ans += (1.0 + calc(A, B + 1, C, ref(values))) * B / (A + B + C);
+  if (C != 0) ans += (1.0 + calc(A, B, C + 1, ref(values))) * C / (A + B + C);
+  set_values(A, B, C, ref(values), ans);
+
+  return ans;
+}
+
 int main() {
   IN(int, A);
   IN(int, B);
   IN(int, C);
+
+  vector<vector<vector<double> > > values(100, vector<vector<double> >(100, vector<double>(100, -1)));
+  cout << fixed << setprecision(6);
+  cout << calc(A, B, C, ref(values)) << endl;
 
   return 0;
 }
