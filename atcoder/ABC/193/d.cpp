@@ -29,16 +29,25 @@ void yes() { cout << "Yes" << endl; }
 void no() { cout << "No" << endl; }
 #pragma endregion
 
+ll pow_ten(int num) {
+  ll ans = 1;
+  REP(i, num) {
+    ans *= 10;
+  }
+
+  return ans;
+}
+
 ll calc_point(string &s, int num) {
   vector<int> count(10, 0);
   REP(i, 4) {
-    count.at(s.at(i))++;
+    count.at(s.at(i) - '0')++;
   }
   count.at(num)++;
 
   ll point = 0;
   REP(i, 1, 10) {
-    point += (ll)i * (1 << count.at(i));
+    point += (ll)i * pow_ten(count.at(i));
   }
 
   return point;
@@ -46,29 +55,34 @@ ll calc_point(string &s, int num) {
 
 int main() {
   IN(int, K);
-  vector<int> s_count(10, 0);
-  vector<int> t_count(10, 0);
+  vector<int> count(10, 0);
   IN(string, S);
   IN(string, T);
-  REP(i, 5) {
-    IN(char, c);
+  for (auto const &c : S) {
     if (c == '#') continue;
-    s_count.at(c - '0')++;
+    count.at(c - '0')++;
   }
-  REP(i, 5) {
-    IN(char, c);
+  for (auto const &c : T) {
     if (c == '#') continue;
-    t_count.at(c - '0')++;
+    count.at(c - '0')++;
   }
 
-  double rate = 0.0;
+  ll total = (ll)(K * 9 - 8) * (K * 9 - 9);
+  ll win = 0;
   REP(i, 1, 10) {
-    if (s_count.at(i) == K) continue;
+    if (count.at(i) == K) continue;
+    count.at(i)++;
     REP(j, 1, 10) {
-      if (t_count.at(j) == K) continue;
-
+      if (count.at(j) == K) continue;
+      if (calc_point(ref(S), i) > calc_point(ref(T), j)) {
+        win += (ll)(K - count.at(i) + 1) * (K - count.at(j));
+      }
     }
+    count.at(i)--;
   }
+
+  cout << fixed << setprecision(7);
+  cout << (double)win / (double)total << endl;
 
   return 0;
 }
