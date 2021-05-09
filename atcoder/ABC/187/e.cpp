@@ -29,13 +29,76 @@ void yes() { cout << "Yes" << endl; }
 void no() { cout << "No" << endl; }
 #pragma endregion
 
-int main() {
-  IN(int, N);
-  IN(int, M);
-  vector<vector<int> > node(N);
-  REP(i, M) {
+void make_tree(vector<int> &parents, vector<vector<int> > &children, vector<vector<int> > &pairs, vector<bool> &is_checked, int target) {
+  if (is_checked.at(target)) return;
+  is_checked.at(target) = true;
+  for (auto const &p : pairs.at(target)) {
+    if (is_checked.at(p)) continue;
+    parents.at(p) = target;
+    children.at(target).emplace_back(p);
+    make_tree(ref(parents), ref(children), ref(pairs), ref(is_checked), p);
+  }
+}
+
+void init(int N, vector<pair<int, int> > &edges, vector<int> &parents, vector<vector<int> > &children) {
+  vector<vector<int> > pairs(N, vector<int>());
+  REP(i, N - 1) {
     IN(int, A);
     IN(int, B);
+    A--; B--;
+    edges.at(i).first = A;
+    edges.at(i).second = B;
+
+    pairs.at(A).emplace_back(B);
+    pairs.at(B).emplace_back(A);
+  }
+
+  vector<bool> is_checked(N, false);
+  make_tree(ref(parents), ref(children), ref(pairs), ref(is_checked), 0);
+}
+
+void calc_values(vector<vector<int> > &children, vector<ll> &values, int target) {
+  for (auto const &child : children.at(target)) {
+    values.at(child) += values.at(target);
+    calc_values(ref(children), ref(values), child);
+  }
+}
+
+void solve(vector<pair<int, int> > &edges, vector<int> &parents, vector<vector<int> > &children, vector<ll> &values, int &root) {
+  IN(int, Q);
+  REP(i, Q) {
+    IN(int, t);
+    IN(int, e);
+    IN(ll, x);
+    e--;
+
+    int A = edges.at(e).first;
+    int B = edges.at(e).second;
+    if (t == 2) swap(A, B);
+
+    if (parents.at(A) == B) {
+      values.at(A) += x;
+    } else {
+      values.at(root) += x;
+      values.at(B) -= x;
+    }
+  }
+
+  calc_values(ref(children), ref(values), root);
+}
+
+int main() {
+  IN(int, N);
+  vector<pair<int, int> > edges(N - 1, pair<int, int>());
+  vector<int> parents(N, -1);
+  vector<vector<int> > children(N, vector<int>());
+  vector<ll> values(N, 0);
+  int root = 0;
+
+  init(N, ref(edges), ref(parents), ref(children));
+  solve(ref(edges), ref(parents), ref(children), ref(values), ref(root));
+  REP(i, N) {
+    cout << values.at(i) << endl;
   }
 
   return 0;
