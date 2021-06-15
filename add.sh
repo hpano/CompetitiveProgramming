@@ -94,11 +94,12 @@ function get_atcoder() {
 
     local data=$(curl -Lso- ${url})
     data=${data#*<span class=\"lang-ja\">}
+    data=${data#*<h3>問題*</h3>}
     data=${data%%</span>*}
     local inflag=false
     local outflag=false
     touch ${name}.in
-    
+
     echo "[add] Get from ${url}"
     while read line; do
       line=`echo ${line} | tr -d "\r"`
@@ -107,23 +108,33 @@ function get_atcoder() {
           inflag=false
           echo "</in>" >> ${name}.in
         else
-          echo ${line} >> ${name}.in
+          if [[ ${line} == "<pre"*">" ]]; then
+            continue;
+          fi
+          echo ${line#*<pre*>} >> ${name}.in
         fi
       elif "${outflag}"; then
         if [[ ${line} =~ "</pre>" ]]; then
           outflag=false
           echo "</out>" >> ${name}.in
         else
-          echo ${line} >> ${name}.in
+          if [[ ${line} == "<pre"*">" ]]; then
+            continue;
+          fi
+          echo ${line#*<pre*>} >> ${name}.in
         fi
       elif [[ ${line} =~ "<h3>入力例" ]]; then
         echo "<in>" >> ${name}.in
         inflag=true
-        echo ${line#*<pre>} >> ${name}.in
+        if [[ ${line} =~ "<pre" ]]; then
+          echo ${line#*<pre*>} >> ${name}.in
+        fi
       elif [[ ${line} =~ "<h3>出力例" ]]; then
         echo "<out>" >> ${name}.in
         outflag=true
-        echo ${line#*<pre>} >> ${name}.in
+        if [[ ${line} =~ "<pre" ]]; then
+          echo ${line#*<pre*>} >> ${name}.in
+        fi
       fi
     done << END
     ${data}
