@@ -99,8 +99,9 @@ tags
 # End of https://www.toptal.com/developers/gitignore/api/c++,macos,visualstudiocode,vim
 
 ### Others ###
-atcoder/AHC/*/tools
+atcoder/*/*/tools
 *.in
 test*.*
 other/*
 weblio
+atcoder/other/genocon2021/
